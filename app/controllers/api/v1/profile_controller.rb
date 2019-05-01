@@ -1,7 +1,15 @@
 class Api::V1::ProfileController < ApplicationController
   def index
     #fetch all profiles
-    return render :json => {:profiles => Profile::all()}
+    if params[:search] then
+      terms = params[:search].split().map{|val| "%#{val}%"}
+      profiles = Profile.search(terms)
+    else
+      profiles = Profile::all()
+    end
+    
+
+    return render :json => {:profiles => profiles}
   end
 
   def show
@@ -11,7 +19,7 @@ class Api::V1::ProfileController < ApplicationController
 
   def create
     #creates a new profile object to validation and persistence
-    profile = Profile.new(name: params[:profile][:name], twitterUrl: params[:profile][:twitterUrl])
+    profile = Profile.new(name: params[:profile][:name], twitter_url: params[:profile][:twitter_url])
 
     #verify if there's any error at profile fields and return if they exists
     return render :json => {:errors => profile.errors}, :status => :bad_request if not profile.valid?
@@ -30,10 +38,10 @@ class Api::V1::ProfileController < ApplicationController
     profile = Profile::find(params[:id])
 
     #update fetched profile data 
-    profile.name = params[:profile][:name]
-    profile.twitterUrl = params[:profile][:twitterUrl]
-    profile.twitterUsername = params[:profile][:twitterUsername]
-    profile.twitterDescription = params[:profile][:twitterDescription]
+    profile.name = params[:profile][:name] if params[:profile][:name]
+    profile.twitter_url = params[:profile][:twitter_url] if params[:profile][:twitter_url]
+    profile.twitter_username = params[:profile][:twitter_username] if params[:profile][:twitter_username]
+    profile.twitter_description = params[:profile][:twitter_description] if params[:profile][:twitter_description]
 
     #verify if there's any error at profile fields and return if they exists
     return render :json => {:errors => profile.errors}, :status => :bad_request if not profile.valid?
