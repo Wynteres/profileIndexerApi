@@ -148,11 +148,11 @@ curl -X DELETE http://localhost:8080/api/v1/profile/{id}
 ```
 A resposta esperada será um *204 - no content*.
 
-##Tecnologias e comentários
-###Sobre o Ruby on Rails
+## Tecnologias e comentários
+### Sobre o Ruby on Rails
 O projeto foi desenvolvido utilizando Ruby 2.3.8 e Rails 4.2.6 principalmente por questões de praticidade no desenvolvimento do teste, já que esta é a versão masi atual do Rails no Docker
 
-###Sobre a arquitetura
+### Sobre a arquitetura
 Decidi utilizar essa arquitetura com uma API e uma view em React.js por se aproximar do que a Fretadão está utilizando e que considero que será utilizada por bastante tempo graças a seus beneficios lidando com aplicativo mobile e web simultaneamente, além da escalabilidade.
 
 O padrão de URL's está *REST-like* com namespaces para rota de API e versão da mesma, para facilitar a manutenção em caso de atualização de regras de negocio ou até mesmo uma migração de tecnologia.
