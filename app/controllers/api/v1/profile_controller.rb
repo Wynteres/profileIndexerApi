@@ -14,19 +14,27 @@ class Api::V1::ProfileController < ApplicationController
 
   def show
     #fetch profile
-    return render :json => {:profile => Profile::find(params[:id])}
+    begin
+      profile = Profile::find(params[:id])
+    rescue
+      return render :json => '',:status => :not_found
+    end
+
+    return render :json => {:profile => profile}
   end
 
   def create
+
     #creates a new profile object to validation and persistence
     profile = Profile.new(name: params[:profile][:name], twitter_url: params[:profile][:twitter_url])
 
     #verify if there's any error at profile fields and return if they exists
     return render :json => {:errors => profile.errors}, :status => :bad_request if not profile.valid?
-    
-
     #persist the profile at database
     profile.save
+
+    #passes a new profile for twitterworker to fetch profile info and save asyncs
+    TwitterWorker.perform_async(profile)
 
     #return the persisted profile
     return render :json => {:profile => profile}, :status => :created
@@ -35,7 +43,14 @@ class Api::V1::ProfileController < ApplicationController
 
   def update
     #Gets existing profile object to update, validate and persist data
-    profile = Profile::find(params[:id])
+    begin
+      profile = Profile::find(params[:id])
+    rescue
+      return render :json => '',:status => :not_found
+    end
+
+    #verify if the twitter profile URL has changed and mark to use after saving profile changes
+    twitterUrlHasChanged = true if not params[:profile][:twitter_url].equal?(profile.twitter_url)
 
     #update fetched profile data 
     profile.name = params[:profile][:name] if params[:profile][:name]
@@ -48,6 +63,9 @@ class Api::V1::ProfileController < ApplicationController
     
     #persist the profile at database
     profile.save
+    
+    #passes the profile for twitterworker to fetch profile info and save asyncs IF the url has changed
+    TwitterWorker.perform_async(profile) if twitterUrlHasChanged
 
     #return the persisted profile
     return render :json => {:profile => profile}, :status => :success
@@ -55,8 +73,12 @@ class Api::V1::ProfileController < ApplicationController
 
   def destroy
 
-    #Get  exiting profile to delete
-    profile = Profile::find(params[:id])
+    #Get existing profile to delete
+    begin
+      profile = Profile::find(params[:id])
+    rescue
+      return render :json => '',:status => :not_found
+    end
 
     #delete the profile
     profile.destroy

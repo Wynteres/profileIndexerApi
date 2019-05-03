@@ -6,8 +6,7 @@ class Profile < ActiveRecord::Base
             twitter_description ILIKE ANY (array[?])", 
             terms,terms,terms)
         }
-
-
+        
     #creates validations for every field for every data manipulation action
     validates :name,
         :presence => {:message => "O nome deve estar preenchido"},
