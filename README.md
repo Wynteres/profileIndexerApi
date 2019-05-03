@@ -33,6 +33,12 @@ e então:
 docker-compose -f "docker-compose.yml" up -d --build
 ```
 
+por fim, para migrar o banco de dados:
+
+```
+docker-compose run web rake db:migrate
+```
+
 ## Endpoints
 toda aplicação foi modelada em cima de um **modelo único** chamado *Profile*
 ### List Profiles
@@ -153,7 +159,7 @@ A resposta esperada será um *204 - no content*.
 
 ## Tecnologias e comentários
 ### Sobre o Ruby on Rails
-O projeto foi desenvolvido utilizando Ruby 2.3.8 e Rails 4.2.6 principalmente por questões de praticidade no desenvolvimento do teste, já que esta é a versão masi atual do Rails no Docker
+O projeto foi desenvolvido utilizando Ruby 2.6 e Rails 5.0 principalmente por questões de praticidade no desenvolvimento do teste, já que esta é a versão mais atual do Ruby no Docker
 
 ### Sobre a arquitetura
 Decidi utilizar essa arquitetura com uma API e uma view em React.js por se aproximar do que a Fretadão está utilizando e que considero que será utilizada por bastante tempo graças a seus beneficios lidando com aplicativo mobile e web simultaneamente, além da escalabilidade.
