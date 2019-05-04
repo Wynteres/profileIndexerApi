@@ -15,6 +15,8 @@ Para que seja utilizado em sua plenitude deve-se rodar a [aplicação desenvolvi
     - [Sobre o Ruby on Rails](#sobre-o-ruby-on-rails)
     - [Sobre a arquitetura](#sobre-a-arquitetura)
     - [Validações e pesquisa](#validações-e-pesquisa)
+    - [Webscrapper e Sidekiq](#webscrapper-e-Sidekiq)
+    - [Encurtamento de Url](#encurtamento-de-rl)
 
 
 ## Run
@@ -157,18 +159,31 @@ curl -X DELETE http://localhost:8080/api/v1/profiles/{id}
 ```
 A resposta esperada será um *204 - no content*.
 
+
 ## Tecnologias e comentários
+
 ### Sobre o Ruby on Rails
-O projeto foi desenvolvido utilizando Ruby 2.6 e Rails 5.0 principalmente por questões de praticidade no desenvolvimento do teste, já que esta é a versão mais atual do Ruby no Docker
+O projeto foi desenvolvido utilizando Ruby 2.6 e Rails 5.1 principalmente por questões de praticidade no desenvolvimento do teste, já que esta é a versão mais atual do Ruby
 
 ### Sobre a arquitetura
 Decidi utilizar essa arquitetura com uma API e uma view em React.js por se aproximar do que a Fretadão está utilizando e que considero que será utilizada por bastante tempo graças a seus beneficios lidando com aplicativo mobile e web simultaneamente, além da escalabilidade.
 
 O padrão de URL's está *REST-like* com namespaces para rota de API e versão da mesma, para facilitar a manutenção em caso de atualização de regras de negocio ou até mesmo uma migração de tecnologia.
 
-E também está sendo utilizado o **PostgreSQL** por ser uma técnologia que tem boa robustes e permite utilizar o JsonB para realizar *buscas*, apesar que o ideal seria realiza-las com *Elastic*
+E também está sendo utilizado o **PostgreSQL** por ser uma técnologia que tem boa robustes e permite utilizar o JsonB para realizar *buscas*, apesar que o ideal seria realiza-las com *[Elastic](#https://www.elastic.co/pt/)*
 
 ### Validações e pesquisa
 Para realizar as validações de campos decidi utilizar o recurso **[Validates](https://guides.rubyonrails.org/active_record_validations.html)** do rails, parametrizando todas validações para cada campo e este recurso trata de validar para todas ações que persistem dados no banco e também fornece o método **.valid?** para verificar e o atributo **.errors** para retornar mensagens ao usuário de forma prática e segura.
 
 Já a pesquisa foi feita utilizando **[Escopos](https://api.rubyonrails.org/classes/ActiveRecord/Scoping/Named/ClassMethods.html)**, o que não é o ideal por não ser escalavel mas resolve o problema surgerido deixando fácil para que seja implementado de uma nova forma sem gerar muito esforço para compreender e dar manutenção.
+
+### Webscrapper e Sidekiq
+
+Para fazer o *webscrapper* funcionar *assincronamente*, permitido que o perfil seja criado retornado e tudo funcione sem ficar parado/travado em algum processo que acessa dados externos da apicação, foi utilizado o **[Sidekiq](#https://github.com/mperham/sidekiq)**, que lida com uma fila de trabalhos que são realizados em *"background"*, a aplicação se faz necessária o Redis por conta desta ferramenta.
+
+O scrapping propriamente dito está utilizando o **[nokogiri](#https://nokogiri.org/)** + **[nokogumbo](#https://github.com/rubys/nokogumbo)** para interface *HTML5*. 
+
+### Encurtamento de Url
+
+Assim como o webscrapper, para encurtar a URL é criado um trabalho assincrono com o sidekiq, que faz a conexão na api do *[Cuttly](#https://cutt.ly/)* passando a URL a ser encurtada e recebendo a nova URL.
+Em toda criação de perfil e sempre que há alteração na URL do twitter é realizada essa ação

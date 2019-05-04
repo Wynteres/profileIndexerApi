@@ -10,18 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190430233314) do
-
+ActiveRecord::Schema.define(version: 20_190_430_233_314) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "profiles", force: :cascade do |t|
-    t.string   "name",                null: false
-    t.string   "twitter_url",         null: false
-    t.string   "twitter_username"
-    t.string   "twitter_description"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+  create_table 'profiles', force: :cascade do |t|
+    t.string   'name',                null: false
+    t.string   'twitter_url',         null: false
+    t.string   'twitter_username'
+    t.string   'twitter_description'
+    t.datetime 'created_at',          null: false
+    t.datetime 'updated_at',          null: false
   end
-
 end
