@@ -25,17 +25,10 @@ Esta aplicação tem um arquivo [docker](https://www.docker.com/get-started) e d
 Para iniciar faça os seguintes comandos na pasta da aplicação através do *terminal* ou *powershell*:
 
 ```
-docker build --rm -f "Dockerfile" -t fretadao:latest .
-```
-
-e então:
-
-
-```
 docker-compose -f "docker-compose.yml" up -d --build
 ```
 
-por fim, para migrar o banco de dados:
+e então, para migrar o banco de dados:
 
 ```
 docker-compose run web rake db:migrate
@@ -82,7 +75,7 @@ Exemplo:
 curl -X POST http://localhost:8080/api/v1/profiles -H 'content-type: application/json' -d '{"name":"Raul Coan","twitter_url": "https://twitter.com/TiranoCoan"}'
 ```
 
-A resposta esperada será um JSON no seguinte formato:
+A resposta esperada será um *201- created* com o JSON no seguinte formato:
 ```
 {
     "id": 1,
@@ -103,7 +96,7 @@ Exemplo:
 curl -X GET http://localhost:8080/api/v1/profiles/{id}
 ```
 
-A resposta esperada será um JSON no seguinte formato:
+A resposta esperada será um *200 - success* com JSON no seguinte formato:
 ```
 {
 "profile":
@@ -170,7 +163,7 @@ Decidi utilizar essa arquitetura com uma API e uma view em React.js por se aprox
 
 O padrão de URL's está *REST-like* com namespaces para rota de API e versão da mesma, para facilitar a manutenção em caso de atualização de regras de negocio ou até mesmo uma migração de tecnologia.
 
-E também está sendo utilizado o **PostgreSQL** por ser uma técnologia que tem boa robustes e permite utilizar o JsonB para realizar *buscas*, apesar que o ideal seria realiza-las com *[Elastic](#https://www.elastic.co/pt/)*
+E também está sendo utilizado o **PostgreSQL** por ser uma técnologia que tem boa robustes e permite utilizar o JsonB para realizar *buscas*, apesar que o ideal seria realiza-las com *[Elastic search](#https://www.elastic.co/pt/)*
 
 ### Validações e pesquisa
 Para realizar as validações de campos decidi utilizar o recurso **[Validates](https://guides.rubyonrails.org/active_record_validations.html)** do rails, parametrizando todas validações para cada campo e este recurso trata de validar para todas ações que persistem dados no banco e também fornece o método **.valid?** para verificar e o atributo **.errors** para retornar mensagens ao usuário de forma prática e segura.

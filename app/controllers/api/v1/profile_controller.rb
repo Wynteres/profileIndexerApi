@@ -1,5 +1,11 @@
 # Controller for Profile model action
 class Api::V1::ProfileController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :return_not_found
+  
+  def return_not_found
+    render json: '', status: :not_found
+  end
+
   def index
     # fetch all profiles
     if params[:search]
@@ -14,12 +20,7 @@ class Api::V1::ProfileController < ApplicationController
 
   def show
     # fetch profile
-    begin
-      profile = Profile.find(params[:id])
-    rescue StandardError
-      return render json: '', status: :not_found
-    end
-
+    profile = Profile.find(params[:id])
     render json: { profile: profile }
   end
 
@@ -45,11 +46,7 @@ class Api::V1::ProfileController < ApplicationController
 
   def update
     # Gets existing profile object to update, validate and persist data
-    begin
-      profile = Profile.find(params[:id])
-    rescue StandardError
-      return render json: '', status: :not_found
-    end
+    profile = Profile.find(params[:id])
 
     # verify if the twitter profile URL has changed and mark to use after saving profile changes
     twitterUrlHasChanged = true unless params[:profile][:twitter_url].equal?(profile.twitter_url)
@@ -78,11 +75,7 @@ class Api::V1::ProfileController < ApplicationController
 
   def destroy
     # Get existing profile to delete
-    begin
-      profile = Profile.find(params[:id])
-    rescue StandardError
-      return render json: '', status: :not_found
-    end
+    profile = Profile.find(params[:id])
 
     # delete the profile
     profile.destroy
