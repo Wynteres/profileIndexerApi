@@ -1,7 +1,7 @@
 # Profile Indexer Api
 Interface de aplicação para solução do [desafio](https://github.com/Fretadao/challenge/tree/master/fullstack/indexer) proposto pelo [Fretadão](https://fretadao.com/)
 
-Para que seja utilizado em sua plenitude deve-se rodar a [aplicação desenvolvida para visualização](#) juntamente a essa aplicação. 
+Para que seja utilizado em sua plenitude deve-se rodar a [aplicação desenvolvida para visualização](#https://github.com/Wynteres/profileIndexerClient) juntamente a essa aplicação. 
 
 ## Summary
  - [Rodando a aplicação](#run)
